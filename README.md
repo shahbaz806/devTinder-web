@@ -7,3 +7,7 @@
  -create browserrouter > routes > route 
  -create outlet in body to renderd children components
  -
+
+# see all connections
+ request recieved 
+ request connection
