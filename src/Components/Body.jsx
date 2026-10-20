@@ -1,6 +1,7 @@
+
 import React, { useEffect } from "react";
 import NavBar from "./NavBar";
-import { Navigate, Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import Footer from "./Footer";
 import axios from "axios";
 import { BASE_URL } from "../utils/constant";
@@ -12,25 +13,33 @@ const Body = () => {
   const navigate = useNavigate();
   const userData = useSelector((store) => store.user);
 
-  const fetchUser = async () => {
-    if (userData) return;
-    try {
-      const res = await axios.get(BASE_URL + "/profile/view", {
-        withCredentials: true,
-      });
-
-      dispatch(addUser(res.data));
-    } catch (err) {
-      if (err.status === 401) {
-       return navigate("/login");
-      }
-      console.error(err);
-    }
-  };
-
   useEffect(() => {
+    if (userData) return;
+
+    const fetchUser = async () => {
+      try {
+        const res = await axios.get(
+          `${BASE_URL}/profile/view`,
+          { withCredentials: true }
+        );
+
+        dispatch(addUser(res.data));
+      } catch (err) {
+        if (err.response?.status === 401) {
+          navigate("/login", { replace: true });
+          return;
+        }
+
+        console.error(
+          "Profile fetch error:",
+          err.response?.data || err.message
+        );
+      }
+    };
+
     fetchUser();
-  }, []);
+  }, [userData, dispatch, navigate]);
+
   return (
     <div>
       <NavBar />
