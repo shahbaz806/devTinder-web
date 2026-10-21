@@ -36,7 +36,7 @@ const Connection = () => {
               <img
                 className="w-20 h-20 rounded-full"
                 src={photoUrl}
-                alt="photo"
+                alt="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQtCAXOYueXDQfxhs7vsSfUQGkPNM1XENi9Bxg7IMPY3A&s=10"
               />
             </div>
             <div className="text-left mx-4">
