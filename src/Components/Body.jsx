@@ -41,7 +41,7 @@ const Body = () => {
   }, [userData, dispatch, navigate]);
 
   return (
-    <div>
+    <div className="pt-20">
       <NavBar />
       <Outlet />
       <Footer />

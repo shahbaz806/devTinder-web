@@ -12,7 +12,9 @@ const Feed = () => {
     if (feed) return;
     const res = await axios.get(BASE_URL + "/feed", { withCredentials: true });
     dispatch(addfeed(res.data));
+    console.log("Feed API response:", res);
   };
+  
 
   useEffect(() => {
     getFeed();
