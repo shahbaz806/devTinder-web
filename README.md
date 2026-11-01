@@ -11,3 +11,7 @@
 # see all connections
  request recieved 
  request connection
+
+
+
+ ssh -i "DevTinder-secret.pem" ubuntu@ec2-13-211-5-230.ap-southeast-2.compute.amazonaws.com
