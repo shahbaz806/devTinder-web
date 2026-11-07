@@ -90,17 +90,19 @@ const Body = () => {
 
     fetchUser();
   }, [userData, dispatch, navigate]);
-  return (
-    <div className="min-h-screen flex flex-col bg-[#17243A] pt-16">
-      <NavBar />
-  
-      <main className="flex-1 flex flex-col">
-        <Outlet />
-      </main>
-  
-      <Footer />
-    </div>
-  );
+ 
+return (
+  <div className="min-h-screen flex flex-col bg-base-100 text-base-content transition-colors duration-300 pt-16">
+    <NavBar />
+
+    <main className="flex-1 flex flex-col">
+      <Outlet />
+    </main>
+
+    <Footer />
+  </div>
+);
+
 };
 
 export default Body;

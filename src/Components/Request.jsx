@@ -1,97 +1,3 @@
-// import React, { useEffect, useState } from "react";
-// import { BASE_URL } from "../utils/constant";
-// import { addRequest, removeRequest } from "../utils/requestSlice";
-// import { useDispatch, useSelector } from "react-redux";
-// import axios from "axios";
-
-// const Request = () => {
-//   const request = useSelector((store) => store.requests);
-//   const dispatch = useDispatch();
-
-//   const reviewRequest = async (status, _id) => {
-//     try {
-//       const res = await axios.post(
-//         BASE_URL + "/request/review/" + status + "/" + _id,
-//         {},
-//         { withCredentials: true }
-//       );
-//       dispatch(removeRequest(_id));
-//     } catch (err) {}
-//   };
-
-//   const fetchRequest = async () => {
-//     try {
-//       const res = await axios.get(BASE_URL + "/user/request/recieved", {
-//         withCredentials: true,
-//       });
-//       console.log(res);
-//       dispatch(addRequest(res?.data?.data));
-//     } catch (e) {
-//       console.error(e);
-//     }
-//   };
-//   useEffect(() => {
-//     fetchRequest();
-//   }, []);
-
-//   if (!request) return;
-//   if (request.length === 0)
-//     return (
-//       <h1 className="text-center text-white text-2xl my-10">
-//         No Requests Found
-//       </h1>
-//     );
-
-//   return (
-//     <div className=" text-center my-10">
-//       <h1 className="text-bold text-white text-3xl">Connections Requests</h1>
-
-//       {request.map((req, indx) => {
-//         const { _id, firstName, lastName, photoUrl, age, gender, about } =
-//           req.fromUserId;
-//         return (
-//           <div
-//             key={indx}
-//             className="flex justify-between items-center m-4 p-4 rounded-lg bg-base-300 w-2/4 mx-auto"
-//           >
-//             <div>
-//               <img
-//                 className="w-20 h-20 rounded-full"
-//                 src={photoUrl}
-//                 alt="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQtCAXOYueXDQfxhs7vsSfUQGkPNM1XENi9Bxg7IMPY3A&s=10"
-//               />
-//             </div>
-//             <div className="text-left mx-4">
-//               <h2 className="font-bold text-xl">
-//                 {firstName + " " + lastName}
-//               </h2>
-//               {age && gender && <p>{age + ", " + gender}</p>}
-//               <p>{about}</p>
-//             </div>
-//             <div>
-//               <button
-//                 className="btn btn-primary mx-2"
-//                 onClick={()=> reviewRequest("rejected", req._id)}
-//               >
-//                 Reject
-//               </button>
-//               <button
-//                 className="btn btn-secondary mx-2"
-//                 onClick={()=> reviewRequest("accepted", req._id)}
-//               >
-//                 Accept
-//               </button>
-//             </div>
-//           </div>
-//         );
-//       })}
-//     </div>
-//   );
-// };
-
-// export default Request;
-
-
 
 import React, { useEffect, useState } from "react";
 import { BASE_URL } from "../utils/constant";
@@ -163,25 +69,29 @@ const Request = () => {
   const BackgroundDecor = () => (
     <>
       <div
-        className="pointer-events-none absolute inset-0 opacity-[0.35]"
+        className="pointer-events-none absolute inset-0 opacity-[0.12] dark:opacity-[0.18]"
         style={{
           backgroundImage:
-            "radial-gradient(#a78bfa 1px, transparent 1px)",
+            "radial-gradient(#818cf8 1px, transparent 1px)",
           backgroundSize: "24px 24px",
         }}
       />
-      <div className="pointer-events-none absolute -top-28 -left-20 h-80 w-80 rounded-full bg-purple-200/40 blur-3xl" />
-      <div className="pointer-events-none absolute top-72 -right-24 h-80 w-80 rounded-full bg-indigo-200/40 blur-3xl" />
+
+      <div className="pointer-events-none absolute -top-28 -left-20 h-80 w-80 rounded-full bg-indigo-500/10 blur-3xl" />
+
+      <div className="pointer-events-none absolute top-72 -right-24 h-80 w-80 rounded-full bg-violet-500/10 blur-3xl" />
     </>
   );
 
   if (loading) {
     return (
-      <div className="relative min-h-[calc(100vh-80px)] flex items-center justify-center overflow-hidden bg-gradient-to-br from-[#faf8ff] via-[#f4f0ff] to-[#eef2ff]">
+      <div className="relative flex min-h-[calc(100vh-80px)] items-center justify-center overflow-hidden bg-base-100 px-4">
         <BackgroundDecor />
+
         <div className="relative text-center">
-          <span className="loading loading-spinner loading-lg text-violet-600"></span>
-          <p className="mt-4 font-medium text-gray-600">
+          <span className="loading loading-spinner loading-lg text-indigo-500" />
+
+          <p className="mt-4 font-medium text-base-content/60">
             Loading requests...
           </p>
         </div>
@@ -191,13 +101,15 @@ const Request = () => {
 
   if (error) {
     return (
-      <div className="relative min-h-[calc(100vh-80px)] flex flex-col items-center justify-center bg-[#f7f5ff] px-4">
+      <div className="relative flex min-h-[calc(100vh-80px)] flex-col items-center justify-center bg-base-100 px-4">
         <BackgroundDecor />
-        <div className="relative rounded-3xl bg-white p-8 text-center shadow-xl">
-          <p className="mb-5 text-gray-600">{error}</p>
+
+        <div className="relative rounded-3xl border border-base-300 bg-base-200 p-8 text-center shadow-xl">
+          <p className="mb-5 text-base-content/70">{error}</p>
+
           <button
             onClick={fetchRequest}
-            className="rounded-xl bg-violet-600 px-6 py-3 font-semibold text-white hover:bg-violet-700"
+            className="rounded-xl bg-indigo-600 px-6 py-3 font-semibold text-white transition hover:bg-indigo-700"
           >
             Try Again
           </button>
@@ -208,24 +120,24 @@ const Request = () => {
 
   if (!request || request.length === 0) {
     return (
-      <div className="relative flex min-h-[calc(100vh-80px)] items-center justify-center overflow-hidden bg-gradient-to-br from-[#faf8ff] via-[#f4f0ff] to-[#eef2ff] px-4">
+      <div className="relative flex min-h-[calc(100vh-80px)] items-center justify-center overflow-hidden bg-base-100 px-4">
         <BackgroundDecor />
 
-        <div className="relative w-full max-w-md rounded-[32px] border border-white bg-white/85 p-10 text-center shadow-xl shadow-violet-200/40 backdrop-blur-xl">
-          <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-3xl bg-violet-100 text-violet-600">
+        <div className="relative w-full max-w-md rounded-[32px] border border-base-300 bg-base-200/90 p-10 text-center shadow-xl backdrop-blur-xl">
+          <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-3xl bg-indigo-500/10 text-indigo-500">
             <Users size={38} />
           </div>
 
-          <h2 className="text-2xl font-bold text-gray-800">
+          <h2 className="text-2xl font-bold text-base-content">
             No Pending Requests
           </h2>
 
-          <p className="mt-3 text-sm leading-6 text-gray-500">
+          <p className="mt-3 text-sm leading-6 text-base-content/60">
             You are all caught up! When someone sends you a connection
             request, it will appear here.
           </p>
 
-          <div className="mt-6 flex items-center justify-center gap-2 text-sm font-medium text-violet-600">
+          <div className="mt-6 flex items-center justify-center gap-2 text-sm font-medium text-indigo-500">
             <Sparkles size={17} />
             Keep discovering developers
           </div>
@@ -235,51 +147,53 @@ const Request = () => {
   }
 
   return (
-    <div className="relative min-h-[calc(100vh-80px)] overflow-hidden bg-gradient-to-br from-[#faf8ff] via-[#f4f0ff] to-[#eef2ff] px-4 py-10 sm:px-8">
+    <div className="relative min-h-[calc(100vh-80px)] overflow-hidden bg-base-100 px-4 py-10 sm:px-8">
       <BackgroundDecor />
 
       <div className="relative mx-auto max-w-5xl">
+
         {/* Header */}
         <div className="mb-10 text-center">
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-violet-200 bg-white/80 px-4 py-2 text-sm font-semibold text-violet-700 shadow-sm">
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-base-300 bg-base-200 px-4 py-2 text-sm font-semibold text-indigo-500 shadow-sm">
             <Clock size={16} />
             Your Invitations
           </div>
 
-          <h1 className="text-3xl font-extrabold tracking-tight text-gray-800 sm:text-4xl">
+          <h1 className="text-3xl font-extrabold tracking-tight text-base-content sm:text-4xl">
             Connection Requests
           </h1>
 
-          <p className="mt-3 text-sm text-gray-500 sm:text-base">
+          <p className="mt-3 text-sm text-base-content/60 sm:text-base">
             People who want to connect and grow with you.
           </p>
 
-          <div className="mx-auto mt-5 h-1.5 w-20 rounded-full bg-gradient-to-r from-violet-500 to-indigo-500" />
+          <div className="mx-auto mt-5 h-1.5 w-20 rounded-full bg-gradient-to-r from-indigo-500 to-violet-500" />
         </div>
 
-        {/* Request count */}
-        <div className="mb-6 flex items-center justify-between rounded-2xl border border-white bg-white/75 px-5 py-4 shadow-sm backdrop-blur-md">
+        {/* Request Count */}
+        <div className="mb-6 flex items-center justify-between rounded-2xl border border-base-300 bg-base-200/80 px-5 py-4 shadow-sm backdrop-blur-md">
           <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-violet-100 text-violet-600">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-500/10 text-indigo-500">
               <Users size={21} />
             </div>
 
             <div>
-              <p className="font-bold text-gray-800">
+              <p className="font-bold text-base-content">
                 Pending Requests
               </p>
-              <p className="text-xs text-gray-500">
+
+              <p className="text-xs text-base-content/60">
                 Review your invitations
               </p>
             </div>
           </div>
 
-          <span className="rounded-full bg-violet-100 px-4 py-2 text-sm font-bold text-violet-700">
+          <span className="rounded-full bg-indigo-500/10 px-4 py-2 text-sm font-bold text-indigo-500">
             {request.length}
           </span>
         </div>
 
-        {/* Request cards */}
+        {/* Request Cards */}
         <div className="grid gap-5">
           {request.map((req) => {
             const user = req.fromUserId || {};
@@ -298,7 +212,7 @@ const Request = () => {
             return (
               <div
                 key={req._id}
-                className="group flex flex-col gap-5 rounded-3xl border border-white bg-white/85 p-5 shadow-lg shadow-violet-100/60 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-xl sm:flex-row sm:items-center sm:p-6"
+                className="group flex flex-col gap-5 rounded-3xl border border-base-300 bg-base-200/80 p-5 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:border-indigo-500/40 hover:shadow-xl sm:flex-row sm:items-center sm:p-6"
               >
                 {/* Profile */}
                 <div className="flex min-w-0 flex-1 items-center gap-4">
@@ -309,26 +223,26 @@ const Request = () => {
                         "https://placehold.co/120x120?text=User"
                       }
                       alt={`${firstName || "User"} profile`}
-                      className="h-20 w-20 rounded-2xl border-4 border-violet-100 object-cover shadow-md sm:h-24 sm:w-24"
+                      className="h-20 w-20 rounded-2xl border-4 border-indigo-500/10 object-cover shadow-md sm:h-24 sm:w-24"
                     />
 
-                    <span className="absolute -bottom-1 -right-1 flex h-7 w-7 items-center justify-center rounded-full border-2 border-white bg-violet-600 text-white">
+                    <span className="absolute -bottom-1 -right-1 flex h-7 w-7 items-center justify-center rounded-full border-2 border-base-200 bg-indigo-600 text-white">
                       <UserRound size={14} />
                     </span>
                   </div>
 
                   <div className="min-w-0">
-                    <h2 className="truncate text-xl font-bold text-gray-800 sm:text-2xl">
+                    <h2 className="truncate text-xl font-bold text-base-content sm:text-2xl">
                       {firstName} {lastName}
                     </h2>
 
                     {(age || gender) && (
-                      <p className="mt-1 text-sm font-medium text-violet-600">
+                      <p className="mt-1 text-sm font-medium text-indigo-500">
                         {[age, gender].filter(Boolean).join(" • ")}
                       </p>
                     )}
 
-                    <p className="mt-2 line-clamp-2 text-sm leading-6 text-gray-500">
+                    <p className="mt-2 line-clamp-2 text-sm leading-6 text-base-content/60">
                       {about || "No bio available yet."}
                     </p>
                   </div>
@@ -341,7 +255,7 @@ const Request = () => {
                     onClick={() =>
                       reviewRequest("rejected", req._id)
                     }
-                    className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-rose-200 bg-rose-50 px-5 py-3 text-sm font-bold text-rose-600 transition hover:bg-rose-100 disabled:cursor-not-allowed disabled:opacity-60 sm:flex-none"
+                    className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-rose-500/30 bg-rose-500/10 px-5 py-3 text-sm font-bold text-rose-500 transition hover:bg-rose-500/20 disabled:cursor-not-allowed disabled:opacity-60 sm:flex-none"
                   >
                     {isProcessing && processingStatus === "rejected" ? (
                       <>
@@ -361,7 +275,7 @@ const Request = () => {
                     onClick={() =>
                       reviewRequest("accepted", req._id)
                     }
-                    className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 px-5 py-3 text-sm font-bold text-white shadow-md shadow-violet-200 transition hover:from-violet-700 hover:to-indigo-700 disabled:cursor-not-allowed disabled:opacity-60 sm:flex-none"
+                    className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-5 py-3 text-sm font-bold text-white shadow-md shadow-indigo-500/20 transition hover:from-indigo-700 hover:to-violet-700 disabled:cursor-not-allowed disabled:opacity-60 sm:flex-none"
                   >
                     {isProcessing && processingStatus === "accepted" ? (
                       <>

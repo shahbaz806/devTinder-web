@@ -1,9 +1,11 @@
+
 import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { createSocketConnection } from "../utils/socket";
 import { useSelector } from "react-redux";
 import { BASE_URL } from "../utils/constant";
 import axios from "axios";
+import { Send, MessageCircle, Code2 } from "lucide-react";
 
 const Chat = () => {
   const { targetUserId } = useParams();
@@ -23,12 +25,10 @@ const Chat = () => {
   const socketRef = useRef(null);
   const messagesEndRef = useRef(null);
 
-  // Find chat partner from Redux
   const reduxTargetUser = connections?.find(
     (connection) => String(connection._id) === String(targetUserId)
   );
 
-  // Normalize message structure
   const normalizeMessage = (msg) => {
     const sender = msg.senderId;
 
@@ -106,7 +106,6 @@ const Chat = () => {
           response?.data?.messages?.map(normalizeMessage) || [];
 
         if (isMounted) {
-          // Only show messages from the current conversation
           const filteredMessages = chatMessages.filter(
             (msg) =>
               msg.senderId === String(userId) ||
@@ -138,132 +137,52 @@ const Chat = () => {
   }, [targetUserId, userId]);
 
   // Socket connection
-  // useEffect(() => {
-  //   if (!userId || !targetUserId) return;
+  useEffect(() => {
+    if (!userId || !targetUserId) return;
 
-  //   const socket = createSocketConnection();
-  //   socketRef.current = socket;
+    const socket = createSocketConnection();
+    socketRef.current = socket;
 
-  //   socket.emit("joinChat", {
-  //     firstName: user?.firstName,
-  //     userId,
-  //     targetUserId,
-  //   });
+    const joinRoom = () => {
+      socket.emit("joinChat", {
+        firstName: user?.firstName,
+        userId,
+        targetUserId,
+      });
+    };
 
-  //   // Receive only messages belonging to this conversation
-  //   // const handleNewMessage = (message) => {
-  //   //   const normalizedMessage = normalizeMessage(message);
+    const handleNewMessage = (message) => {
+      const normalizedMessage = normalizeMessage(message);
+      const senderId = normalizedMessage.senderId;
 
-  //   //   const senderId = normalizedMessage.senderId;
+      const isValidMessage =
+        senderId === String(userId) ||
+        senderId === String(targetUserId);
 
-  //   //   const isCurrentConversation =
-  //   //     senderId === String(userId) || senderId === String(targetUserId);
+      if (!isValidMessage || !normalizedMessage.text) {
+        return;
+      }
 
-  //   //   if (!isCurrentConversation || !normalizedMessage.text) {
-  //   //     return;
-  //   //   }
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        normalizedMessage,
+      ]);
+    };
 
-  //   //   setMessages((prevMessages) => {
-  //   //     // Prevent duplicate messages
-  //   //     const alreadyExists = prevMessages.some(
-  //   //       (msg) =>
-  //   //         msg.senderId === normalizedMessage.senderId &&
-  //   //         msg.text === normalizedMessage.text
-  //   //     );
+    socket.on("connect", joinRoom);
+    socket.on("new message recied", handleNewMessage);
 
-  //   //     if (alreadyExists) {
-  //   //       return prevMessages;
-  //   //     }
-
-  //   //     return [...prevMessages, normalizedMessage];
-  //   //   });
-  //   // };
-  //   const handleNewMessage = (message) => {
-  //     const senderId = String(
-  //       message.senderId?._id || message.senderId || ""
-  //     );
-    
-  //     console.log("CURRENT USER:", userId);
-  //     console.log("OPEN CHAT:", targetUserId);
-  //     console.log("MESSAGE SENDER:", senderId);
-    
-  //     const currentUserId = String(userId);
-  //     const chatPartnerId = String(targetUserId);
-    
-  //     if (senderId !== currentUserId && senderId !== chatPartnerId) {
-  //       console.log("MESSAGE BLOCKED");
-  //       return;
-  //     }
-    
-  //     console.log("MESSAGE ALLOWED");
-  //     setMessages((prev) => [...prev, normalizeMessage(message)]);
-  //   };
-
-  //   socket.on("new message recied", handleNewMessage);
-
-  //   return () => {
-  //     socket.off("new message recied", handleNewMessage);
-  //     socket.disconnect();
-  //     socketRef.current = null;
-  //   };
-  // }, [userId, targetUserId]);
-
-  
-useEffect(() => {
-  if (!userId || !targetUserId) return;
-
-  const socket = createSocketConnection();
-  socketRef.current = socket;
-
-  const joinRoom = () => {
-    console.log("Joining chat:", {
-      firstName: user?.firstName,
-      userId,
-      targetUserId,
-    });
-
-    socket.emit("joinChat", {
-      firstName: user?.firstName,
-      userId,
-      targetUserId,
-    });
-  };
-
-  const handleNewMessage = (message) => {
-    const normalizedMessage = normalizeMessage(message);
-
-    const senderId = normalizedMessage.senderId;
-
-    const isValidMessage =
-      senderId === String(userId) ||
-      senderId === String(targetUserId);
-
-    if (!isValidMessage || !normalizedMessage.text) {
-      return;
+    if (socket.connected) {
+      joinRoom();
     }
 
-    setMessages((prevMessages) => [
-      ...prevMessages,
-      normalizedMessage,
-    ]);
-  };
-
-  socket.on("connect", joinRoom);
-  socket.on("new message recied", handleNewMessage);
-
-  // Already connected socket
-  if (socket.connected) {
-    joinRoom();
-  }
-
-  return () => {
-    socket.off("connect", joinRoom);
-    socket.off("new message recied", handleNewMessage);
-    socket.disconnect();
-    socketRef.current = null;
-  };
-}, [userId, targetUserId]);
-
+    return () => {
+      socket.off("connect", joinRoom);
+      socket.off("new message recied", handleNewMessage);
+      socket.disconnect();
+      socketRef.current = null;
+    };
+  }, [userId, targetUserId]);
 
   // Auto scroll
   useEffect(() => {
@@ -289,6 +208,7 @@ useEffect(() => {
       targetUserId,
       text,
     });
+
     setNewMessage("");
   };
 
@@ -301,76 +221,87 @@ useEffect(() => {
   const getInitial = (name) => name?.charAt(0)?.toUpperCase() || "D";
 
   return (
-    <div className="min-h-[calc(100vh-150px)] bg-gradient-to-br from-[#F7F5FF] via-white to-[#F0EDFF] px-3 py-6 sm:px-6">
-      <div className="max-w-3xl mx-auto h-[70vh] min-h-[420px] bg-white border border-[#E9E5F5] rounded-3xl shadow-xl shadow-[#7770E8]/10 flex flex-col overflow-hidden">
+    <div className="min-h-[calc(100vh-80px)] bg-base-100 px-3 py-6 transition-colors duration-300 sm:px-6">
+      <div className="mx-auto flex h-[75vh] min-h-[480px] max-w-4xl flex-col overflow-hidden rounded-3xl border border-base-300 bg-base-200 shadow-xl shadow-indigo-500/5">
+
         {/* HEADER */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-[#E9E5F5] bg-white">
+        <div className="flex items-center justify-between border-b border-base-300 bg-base-200 px-5 py-4">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#7770E8] to-[#A69BF5] flex items-center justify-center text-white text-xl font-bold shadow-md shadow-[#7770E8]/20">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 text-xl font-bold text-white shadow-md shadow-indigo-500/20">
               {getInitial(targetName)}
             </div>
 
             <div>
-              <h2 className="font-bold text-[#252943] text-base sm:text-lg">
+              <h2 className="text-base font-bold text-base-content sm:text-lg">
                 {targetName}
               </h2>
 
-              <div className="flex items-center gap-2 mt-1">
-                <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-                <p className="text-xs text-[#85849D]">Developer Connection</p>
+              <div className="mt-1 flex items-center gap-2">
+                <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                <p className="text-xs text-base-content/50">
+                  Developer Connection
+                </p>
               </div>
             </div>
           </div>
 
-          <div className="hidden sm:block text-right">
-            <p className="text-sm font-bold text-[#7770E8]">DevTinder Chat</p>
-            <p className="text-xs text-[#85849D]">
+          <div className="hidden text-right sm:block">
+            <div className="flex items-center justify-end gap-2 text-sm font-bold text-indigo-500">
+              <Code2 size={17} />
+              DevTinder Chat
+            </div>
+
+            <p className="text-xs text-base-content/50">
               Connect. Code. Collaborate.
             </p>
           </div>
         </div>
 
         {/* MESSAGES */}
-        <div className="flex-1 overflow-y-auto px-4 sm:px-7 py-6 bg-[#F8F7FF]">
+        <div className="flex-1 overflow-y-auto bg-base-100 px-4 py-6 sm:px-7">
+
           {loading ? (
-            <div className="h-full flex flex-col items-center justify-center gap-3">
-              <span className="loading loading-spinner loading-lg text-[#7770E8]"></span>
-              <p className="text-sm text-[#85849D]">
+            <div className="flex h-full flex-col items-center justify-center gap-3">
+              <span className="loading loading-spinner loading-lg text-indigo-500" />
+
+              <p className="text-sm text-base-content/50">
                 Loading your conversation...
               </p>
             </div>
           ) : error ? (
-            <div className="h-full flex items-center justify-center">
+            <div className="flex h-full items-center justify-center">
               <div className="text-center">
-                <p className="text-red-500 text-sm mb-3">{error}</p>
+                <p className="mb-3 text-sm text-error">{error}</p>
+
                 <button
                   type="button"
                   onClick={() => window.location.reload()}
-                  className="text-[#7770E8] font-semibold text-sm"
+                  className="text-sm font-semibold text-indigo-500 hover:text-indigo-400"
                 >
                   Try Again
                 </button>
               </div>
             </div>
           ) : messages.length === 0 ? (
-            <div className="h-full flex flex-col items-center justify-center text-center">
-              <div className="w-20 h-20 rounded-3xl bg-[#EFECFF] flex items-center justify-center mb-4 text-3xl">
-                💬
+            <div className="flex h-full flex-col items-center justify-center text-center">
+              <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-3xl bg-indigo-500/10 text-indigo-500">
+                <MessageCircle size={36} />
               </div>
 
-              <h3 className="text-xl font-bold text-[#252943]">
+              <h3 className="text-xl font-bold text-base-content">
                 Start a Conversation
               </h3>
 
-              <p className="text-sm text-[#85849D] mt-2 max-w-xs leading-relaxed">
-                Every great collaboration starts with a simple hello. Send your
-                first message and connect!
+              <p className="mt-2 max-w-xs text-sm leading-relaxed text-base-content/50">
+                Every great collaboration starts with a simple hello. Send
+                your first message and connect!
               </p>
             </div>
           ) : (
             <div className="space-y-5">
               {messages.map((msg, index) => {
-                const isOwnMessage = String(userId) === String(msg.senderId);
+                const isOwnMessage =
+                  String(userId) === String(msg.senderId);
 
                 return (
                   <div
@@ -380,27 +311,27 @@ useEffect(() => {
                     }`}
                   >
                     {!isOwnMessage && (
-                      <div className="w-9 h-9 shrink-0 rounded-full bg-[#EAE6FF] text-[#7770E8] flex items-center justify-center text-sm font-bold">
+                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-indigo-500/10 text-sm font-bold text-indigo-500">
                         {getInitial(msg.firstName)}
                       </div>
                     )}
 
                     <div
-                      className={`max-w-[80%] sm:max-w-[70%] flex flex-col ${
+                      className={`flex max-w-[80%] flex-col sm:max-w-[70%] ${
                         isOwnMessage ? "items-end" : "items-start"
                       }`}
                     >
-                      <p className="text-[11px] text-[#9995B0] mb-1 px-2">
+                      <p className="mb-1 px-2 text-[11px] text-base-content/40">
                         {isOwnMessage
                           ? "You"
                           : `${msg.firstName} ${msg.lastName}`.trim() || "User"}
                       </p>
 
                       <div
-                        className={`px-4 py-3 rounded-2xl text-sm leading-relaxed break-words shadow-sm ${
+                        className={`break-words rounded-2xl px-4 py-3 text-sm leading-relaxed shadow-sm ${
                           isOwnMessage
-                            ? "bg-gradient-to-r from-[#7770E8] to-[#9B8AF5] text-white rounded-br-sm shadow-[#7770E8]/15"
-                            : "bg-white border border-[#E9E5F5] text-[#252943] rounded-bl-sm"
+                            ? "rounded-br-sm bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-indigo-500/10"
+                            : "rounded-bl-sm border border-base-300 bg-base-200 text-base-content"
                         }`}
                       >
                         {msg.text}
@@ -418,7 +349,7 @@ useEffect(() => {
         {/* MESSAGE INPUT */}
         <form
           onSubmit={sendMessage}
-          className="px-4 py-4 sm:px-6 sm:py-5 border-t border-[#E9E5F5] bg-white"
+          className="border-t border-base-300 bg-base-200 px-4 py-4 sm:px-6 sm:py-5"
         >
           <div className="flex items-center gap-3">
             <input
@@ -426,20 +357,20 @@ useEffect(() => {
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
               placeholder="Write your message..."
-              className="flex-1 min-w-0 h-12 px-5 rounded-2xl bg-[#F8F7FF] border border-[#E9E5F5] text-[#252943] placeholder:text-[#AAA6BE] outline-none transition-all focus:border-[#9185ED] focus:ring-4 focus:ring-[#9185ED]/10"
+              className="h-12 min-w-0 flex-1 rounded-2xl border border-base-300 bg-base-100 px-5 text-sm text-base-content outline-none transition-all placeholder:text-base-content/35 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
             />
 
             <button
               type="submit"
               disabled={!newMessage.trim() || loading}
-              className="h-12 px-5 sm:px-7 rounded-2xl bg-gradient-to-r from-[#7770E8] to-[#9B8AF5] hover:from-[#6961DC] hover:to-[#8877ED] text-white font-semibold shadow-lg shadow-[#7770E8]/20 transition-all duration-300 hover:-translate-y-0.5 disabled:opacity-40 disabled:cursor-not-allowed"
+              className="flex h-12 items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-indigo-600 to-violet-600 px-5 font-semibold text-white shadow-lg shadow-indigo-500/20 transition-all duration-300 hover:-translate-y-0.5 hover:from-indigo-700 hover:to-violet-700 disabled:cursor-not-allowed disabled:opacity-40 sm:px-7"
             >
               <span className="hidden sm:inline">Send</span>
-              <span className="sm:hidden">➤</span>
+              <Send size={18} />
             </button>
           </div>
 
-          <p className="text-[11px] text-[#AAA6BE] mt-3 text-center">
+          <p className="mt-3 text-center text-[11px] text-base-content/40">
             Connect. Code. Collaborate.
           </p>
         </form>

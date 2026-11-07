@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { BASE_URL } from "../utils/constant";
@@ -97,7 +98,7 @@ const Premium = () => {
         },
 
         theme: {
-          color: "#7C3AED",
+          color: "#6366F1",
         },
 
         handler: async (response) => {
@@ -136,36 +137,47 @@ const Premium = () => {
     }
   };
 
+  // Checking membership
   if (checking) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#F7F5FF]">
-        <span className="loading loading-spinner loading-lg text-violet-600" />
+      <div className="flex min-h-[calc(100vh-80px)] items-center justify-center bg-base-100 transition-colors duration-300">
+        <div className="text-center">
+          <span className="loading loading-spinner loading-lg text-indigo-500" />
+          <p className="mt-4 text-sm font-medium text-base-content/60">
+            Checking your membership...
+          </p>
+        </div>
       </div>
     );
   }
 
+  // Premium user
   if (isUserPremium) {
     return <PremiumSuccess memberShipType={memberShipType} />;
   }
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-[#faf8ff] via-[#f4f0ff] to-[#eef2ff] px-4 py-12 sm:px-8">
-      {/* Background texture */}
+    <div className="relative min-h-[calc(100vh-80px)] overflow-hidden bg-base-100 px-4 py-12 transition-colors duration-300 sm:px-8">
+
+      {/* Background Texture */}
       <div
-        className="pointer-events-none absolute inset-0 opacity-[0.35]"
+        className="pointer-events-none absolute inset-0 opacity-[0.12] dark:opacity-[0.18]"
         style={{
-          backgroundImage: "radial-gradient(#a78bfa 1px, transparent 1px)",
+          backgroundImage: "radial-gradient(#818cf8 1px, transparent 1px)",
           backgroundSize: "25px 25px",
         }}
       />
 
-      <div className="pointer-events-none absolute -top-32 -left-24 h-96 w-96 rounded-full bg-purple-200/40 blur-3xl" />
+      <div className="pointer-events-none absolute -top-32 -left-24 h-96 w-96 rounded-full bg-indigo-500/10 blur-3xl" />
 
-      <div className="pointer-events-none absolute top-80 -right-32 h-96 w-96 rounded-full bg-indigo-200/40 blur-3xl" />
+      <div className="pointer-events-none absolute top-80 -right-32 h-96 w-96 rounded-full bg-violet-500/10 blur-3xl" />
 
       <div className="relative mx-auto max-w-6xl">
+
+        {/* Premium Header */}
         <PremiumHeader />
 
+        {/* Pricing Plans */}
         <div className="mx-auto grid max-w-5xl gap-8 md:grid-cols-2 md:items-stretch">
           {plans.map((plan) => (
             <PricingCard
@@ -178,13 +190,14 @@ const Premium = () => {
           ))}
         </div>
 
+        {/* Payment Error */}
         {error && (
-          <div className="mx-auto mt-7 max-w-xl rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-center text-sm font-medium text-red-600">
+          <div className="mx-auto mt-7 max-w-xl rounded-2xl border border-rose-500/30 bg-rose-500/10 px-5 py-4 text-center text-sm font-medium text-rose-500">
             {error}
           </div>
         )}
 
-        <p className="mt-12 text-center text-sm text-gray-400">
+        <p className="mt-12 text-center text-sm text-base-content/40">
           Build connections. Share knowledge. Grow together.
         </p>
       </div>

@@ -4,6 +4,7 @@ import React, { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Provider } from "react-redux";
 import appStore from "./utils/appStore";
+import { ThemeProvider } from "./Components/Context/ThemeContext";
 
 import Body from "./Components/Body";
 
@@ -21,24 +22,47 @@ const PageLoader = () => (
   </div>
 );
 
+// function App() {
+//   return (
+//     <Provider store={appStore}>
+//       <BrowserRouter basename="/">
+//         <Suspense fallback={<PageLoader />}>
+//           <Routes>
+//             <Route path="/" element={<Body />}>
+//               <Route index element={<Feed />} />
+//               <Route path="login" element={<Login />} />
+//               <Route path="profile" element={<Profile />} />
+//               <Route path="connections" element={<Connection />} />
+//               <Route path="requests" element={<Request />} />
+//               <Route path="premium" element={<Premium />} />
+//               <Route path="chat/:targetUserId" element={<Chat />} />
+//             </Route>
+//           </Routes>
+//         </Suspense>
+//       </BrowserRouter>
+//     </Provider>
+//   );
+// }
 function App() {
   return (
     <Provider store={appStore}>
-      <BrowserRouter basename="/">
-        <Suspense fallback={<PageLoader />}>
-          <Routes>
-            <Route path="/" element={<Body />}>
-              <Route index element={<Feed />} />
-              <Route path="login" element={<Login />} />
-              <Route path="profile" element={<Profile />} />
-              <Route path="connections" element={<Connection />} />
-              <Route path="requests" element={<Request />} />
-              <Route path="premium" element={<Premium />} />
-              <Route path="chat/:targetUserId" element={<Chat />} />
-            </Route>
-          </Routes>
-        </Suspense>
-      </BrowserRouter>
+      <ThemeProvider>
+        <BrowserRouter basename="/">
+          <Suspense fallback={<PageLoader />}>
+            <Routes>
+              <Route path="/" element={<Body />}>
+                <Route index element={<Feed />} />
+                <Route path="login" element={<Login />} />
+                <Route path="profile" element={<Profile />} />
+                <Route path="connections" element={<Connection />} />
+                <Route path="requests" element={<Request />} />
+                <Route path="premium" element={<Premium />} />
+                <Route path="chat/:targetUserId" element={<Chat />} />
+              </Route>
+            </Routes>
+          </Suspense>
+        </BrowserRouter>
+      </ThemeProvider>
     </Provider>
   );
 }

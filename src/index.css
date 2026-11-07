@@ -1,5 +1,22 @@
-@import "tailwindcss";
+/* @import "tailwindcss";
 @plugin "daisyui";
 @plugin "daisyui" {
   themes: dim --default, dark --prefersdark;
+} */
+
+
+@import "tailwindcss";
+
+@plugin "daisyui" {
+  themes: light --default, dark;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --color-base-100: #17243A;
+  --color-base-200: #1E293B;
+  --color-base-300: #334155;
+  --color-base-content: #F1F5F9;
+  --color-primary: #6366F1;
+  --color-primary-content: #FFFFFF;
 }
