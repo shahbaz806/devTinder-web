@@ -165,6 +165,7 @@ const EditProfile = ({ user }) => {
   const [firstName, setFirstName] = useState(user.firstName || "");
   const [lastName, setLastName] = useState(user.lastName || "");
   const [photoUrl, setPhotoUrl] = useState(user.photoUrl || "");
+  const [photoError, setPhotoError] = useState("");
   const [gender, setGender] = useState(user.gender || "");
   const [age, setAge] = useState(user.age || "");
   const [about, setAbout] = useState(user.about || "");
@@ -174,6 +175,38 @@ const EditProfile = ({ user }) => {
   const [loading, setLoading] = useState(false);
 
   const dispatch = useDispatch();
+
+  const handlePhotoChange = (e) => {
+    const file = e.target.files?.[0];
+  
+    if (!file) return;
+  
+    setPhotoError("");
+  
+    if (!file.type.startsWith("image/")) {
+      setPhotoError("Please select a valid image.");
+      return;
+    }
+  
+    if (file.size > 1 * 1024 * 1024) {
+      setPhotoError("Image size must be less than 1 MB.");
+      return;
+    }
+  
+    const reader = new FileReader();
+  
+    reader.onload = () => {
+      if (typeof reader.result === "string") {
+        setPhotoUrl(reader.result);
+      }
+    };
+  
+    reader.onerror = () => {
+      setPhotoError("Unable to read image.");
+    };
+  
+    reader.readAsDataURL(file);
+  };
 
   const saveProfile = async () => {
     setError("");
@@ -311,7 +344,7 @@ const EditProfile = ({ user }) => {
               </div>
 
               {/* Photo URL */}
-              <div>
+              {/* <div>
                 <label className={labelClass}>
                   <Camera size={15} className="text-violet-500" />
                   Profile Photo URL
@@ -328,7 +361,37 @@ const EditProfile = ({ user }) => {
                 <p className="mt-2 text-xs text-gray-400">
                   Add a publicly accessible image URL.
                 </p>
-              </div>
+              </div> */}
+              <div>
+  <label className={labelClass}>
+    <Camera size={15} className="text-violet-500" />
+    Profile Photo
+  </label>
+
+  <div className="flex items-center gap-5 rounded-xl border p-4">
+    <img
+      src={photoUrl || user.photoUrl}
+      alt="Profile"
+      className="h-24 w-24 rounded-full object-cover"
+    />
+
+    <label className="cursor-pointer rounded-xl bg-violet-600 px-5 py-3 text-white">
+      <Camera size={17} className="inline mr-2" />
+      Choose Photo
+
+      <input
+        type="file"
+        accept="image/*"
+        onChange={handlePhotoChange}
+        className="hidden"
+      />
+    </label>
+  </div>
+
+  {photoError && (
+    <p className="mt-2 text-sm text-red-500">{photoError}</p>
+  )}
+</div>
 
               {/* Gender & Age */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
