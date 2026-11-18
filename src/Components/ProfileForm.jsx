@@ -1,5 +1,13 @@
+
 import React from "react";
-import { UserRound, AlertCircle, Save, Loader2 } from "lucide-react";
+import {
+  UserRound,
+  AlertCircle,
+  Save,
+  LoaderCircle,
+  Sparkles,
+} from "lucide-react";
+
 import ProfileFields from "./ProfileFields";
 
 const ProfileForm = (props) => {
@@ -23,21 +31,31 @@ const ProfileForm = (props) => {
   } = props;
 
   return (
-    <div className="rounded-2xl border border-base-300 bg-base-100 p-5 shadow-sm transition-colors duration-300 sm:p-7">
-      <div className="mb-7 flex items-center gap-3 border-b border-base-300 pb-5">
-        <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-500/10 text-indigo-500">
+    <div className="rounded-2xl border border-base-300 bg-base-100 p-5 shadow-sm transition-colors duration-300 sm:rounded-3xl sm:p-7 lg:p-8">
+
+      {/* Form Header */}
+      <div className="mb-7 flex items-center gap-3 border-b border-base-300 pb-6">
+        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-primary/15 bg-primary/10 text-primary">
           <UserRound size={22} />
         </div>
 
-        <div>
-          <h3 className="font-bold text-base-content">Personal Information</h3>
-          <p className="mt-1 text-xs text-base-content/50">
-            Keep your profile information up to date.
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center gap-2">
+            <h3 className="font-serif text-xl font-semibold text-base-content sm:text-2xl">
+              Personal Information
+            </h3>
+
+            <Sparkles size={14} className="text-primary" />
+          </div>
+
+          <p className="mt-1 text-xs leading-relaxed text-base-content/50 sm:text-sm">
+            Manage your details and make your profile yours.
           </p>
         </div>
       </div>
 
-      <div className="space-y-5">
+      {/* Form Fields */}
+      <div className="space-y-6">
         <ProfileFields
           firstName={firstName}
           setFirstName={setFirstName}
@@ -54,31 +72,46 @@ const ProfileForm = (props) => {
           handlePhotoChange={handlePhotoChange}
         />
 
+        {/* Error Message */}
         {error && (
-          <div className="flex items-start gap-2 rounded-xl border border-red-500/20 bg-red-500/10 p-3 text-sm text-red-500">
+          <div
+            role="alert"
+            className="flex items-start gap-3 rounded-xl border border-error/20 bg-error/10 p-4 text-sm text-error"
+          >
             <AlertCircle size={18} className="mt-0.5 shrink-0" />
-            {error}
+
+            <p className="leading-relaxed">{error}</p>
           </div>
         )}
 
-        <button
-          type="button"
-          onClick={saveProfile}
-          disabled={loading}
-          className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 px-6 py-3.5 font-semibold text-white shadow-lg shadow-indigo-500/20 transition-all hover:-translate-y-0.5 hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0"
-        >
-          {loading ? (
-            <>
-              <Loader2 size={19} className="animate-spin" />
-              Saving Profile...
-            </>
-          ) : (
-            <>
-              <Save size={19} />
-              Save Changes
-            </>
-          )}
-        </button>
+        {/* Save Button */}
+        <div className="border-t border-base-300 pt-6">
+          <button
+            type="button"
+            onClick={saveProfile}
+            disabled={loading}
+            className="group flex w-full items-center justify-center gap-2.5 rounded-xl bg-primary px-6 py-3.5 text-sm font-bold text-primary-content shadow-md shadow-primary/15 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/20 active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0"
+          >
+            {loading ? (
+              <>
+                <LoaderCircle size={19} className="animate-spin" />
+                Saving Profile...
+              </>
+            ) : (
+              <>
+                <Save
+                  size={18}
+                  className="transition-transform duration-200 group-hover:scale-110"
+                />
+                Save Changes
+              </>
+            )}
+          </button>
+
+          <p className="mt-3 text-center text-[10px] text-base-content/40 sm:text-xs">
+            Your profile changes will be reflected across DevTinder.
+          </p>
+        </div>
       </div>
     </div>
   );

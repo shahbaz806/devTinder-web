@@ -34,14 +34,14 @@ const NavBar = () => {
       await axios.post(BASE_URL + "/logout", {}, { withCredentials: true });
 
       dispatch(removeUser());
-      navigate("/login", { replace: true });
+      navigate("/", { replace: true });
     } catch (err) {
       console.error("Logout error:", err);
     }
   };
 
   const navLinks = [
-    { name: "Feed", path: "/", icon: Home },
+    { name: "Feed", path: "/feed", icon: Home },
     { name: "Connections", path: "/connections", icon: Users },
     { name: "Requests", path: "/requests", icon: UserRoundPlus },
   ];

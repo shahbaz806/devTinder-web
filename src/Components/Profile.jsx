@@ -1,18 +1,22 @@
 
 import React from "react";
 import { useSelector } from "react-redux";
+import { UserRound, Sparkles, ShieldCheck } from "lucide-react";
+import { motion } from "framer-motion";
+
 import EditProfile from "./EditProfile";
-import { UserRound, Sparkles } from "lucide-react";
 
 const Profile = () => {
   const user = useSelector((store) => store.user);
 
+  // Loading State
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-base-100 text-base-content transition-colors duration-300">
+      <div className="flex min-h-screen items-center justify-center bg-base-100 px-4 text-base-content">
         <div className="text-center">
-          <div className="w-10 h-10 border-4 border-indigo-500/20 border-t-indigo-500 rounded-full animate-spin mx-auto" />
-          <p className="mt-4 text-base-content/60 font-medium">
+          <div className="mx-auto h-11 w-11 animate-spin rounded-full border-[3px] border-primary/20 border-t-primary" />
+
+          <p className="mt-4 text-sm font-medium text-base-content/60">
             Loading your profile...
           </p>
         </div>
@@ -21,53 +25,81 @@ const Profile = () => {
   }
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-base-100 px-4 py-10 sm:px-6 transition-colors duration-300">
+    <div className="relative min-h-screen overflow-hidden bg-base-100 px-4 py-10 transition-colors duration-300 sm:px-6 lg:py-14">
 
       {/* Background Texture */}
       <div
-        className="absolute inset-0 pointer-events-none opacity-[0.15]"
+        className="pointer-events-none absolute inset-0 opacity-[0.08]"
         style={{
           backgroundImage:
             "radial-gradient(currentColor 1px, transparent 1px)",
-          backgroundSize: "24px 24px",
+          backgroundSize: "26px 26px",
         }}
       />
 
-      {/* Decorative Circles */}
-      <div className="absolute -top-24 -right-20 w-80 h-80 rounded-full bg-violet-500/10 blur-3xl pointer-events-none" />
-      <div className="absolute bottom-0 -left-20 w-80 h-80 rounded-full bg-indigo-500/10 blur-3xl pointer-events-none" />
+      {/* Decorative Background */}
+      <div className="pointer-events-none absolute -right-32 -top-32 h-96 w-96 rounded-full bg-primary/10 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-32 -left-32 h-96 w-96 rounded-full bg-secondary/10 blur-3xl" />
 
-      <div className="relative z-10 max-w-5xl mx-auto">
+      <div className="relative z-10 mx-auto max-w-6xl">
 
         {/* Profile Header */}
-        <div className="mb-8 text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 18 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45 }}
+          className="mb-9"
+        >
+          <div className="flex flex-col items-center text-center">
 
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-base-200 border border-base-300 shadow-sm text-indigo-500 text-sm font-semibold mb-4 transition-colors duration-300">
-            <Sparkles size={16} />
-            Your Personal Space
-          </div>
-
-          <div className="flex items-center justify-center gap-3">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-violet-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-500/20">
-              <UserRound size={25} className="text-white" />
+            {/* Eyebrow */}
+            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-2 text-xs font-bold tracking-wide text-primary">
+              <Sparkles size={14} />
+              YOUR PERSONAL SPACE
             </div>
 
-            <h1 className="text-3xl sm:text-4xl font-extrabold text-base-content">
-              My Profile
-            </h1>
+            {/* Heading */}
+            <div className="flex items-center gap-3">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary text-primary-content shadow-lg shadow-primary/20">
+                <UserRound size={24} />
+              </div>
+
+              <h1 className="font-serif text-3xl font-bold tracking-tight text-base-content sm:text-5xl">
+                My Profile<span className="text-primary">.</span>
+              </h1>
+            </div>
+
+            <p className="mt-4 max-w-xl text-sm leading-7 text-base-content/55 sm:text-base">
+              Your developer identity starts here. Keep your information
+              updated and let the community know more about you.
+            </p>
+
+            {/* Profile Status */}
+            <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-base-300 bg-base-200 px-3 py-2">
+              <ShieldCheck size={15} className="text-primary" />
+              <span className="text-xs font-medium text-base-content/65">
+                Manage your profile information
+              </span>
+            </div>
           </div>
 
-          <p className="text-base-content/60 mt-3 max-w-lg mx-auto">
-            Manage your developer identity, update your information
-            and make your profile stand out.
-          </p>
-        </div>
+          <div className="mx-auto mt-8 h-px max-w-4xl bg-gradient-to-r from-transparent via-base-content/15 to-transparent" />
+        </motion.div>
 
-        {/* Edit Profile Card */}
-        <div className="bg-base-200/90 backdrop-blur-xl border border-base-300 rounded-3xl shadow-xl shadow-slate-950/10 p-3 sm:p-6 transition-colors duration-300">
+        {/* Edit Profile Container */}
+        <motion.div
+          initial={{ opacity: 0, y: 22 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="overflow-hidden rounded-3xl border border-base-300 bg-base-200/70 p-3 shadow-xl shadow-base-content/5 backdrop-blur-sm sm:p-6 lg:p-8"
+        >
           <EditProfile user={user} />
-        </div>
+        </motion.div>
 
+        {/* Footer Note */}
+        <p className="mt-6 text-center text-xs text-base-content/40">
+          Your profile helps other developers get to know you better.
+        </p>
       </div>
     </div>
   );

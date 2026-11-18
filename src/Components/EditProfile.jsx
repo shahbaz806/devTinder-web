@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import axios from "axios";
 import { useDispatch } from "react-redux";
@@ -68,7 +69,12 @@ const EditProfile = ({ user }) => {
       return;
     }
 
-    if (age && (Number(age) < 18 || Number(age) > 100)) {
+    if (
+      age !== "" &&
+      (!Number.isFinite(Number(age)) ||
+        Number(age) < 18 ||
+        Number(age) > 100)
+    ) {
       setError("Please enter a valid age.");
       return;
     }
@@ -79,12 +85,12 @@ const EditProfile = ({ user }) => {
       const res = await axios.patch(
         BASE_URL + "/profile/edit",
         {
-          firstName,
-          lastName,
+          firstName: firstName.trim(),
+          lastName: lastName.trim(),
           photoUrl,
           gender,
           age: age === "" ? undefined : Number(age),
-          about,
+          about: about.trim(),
         },
         { withCredentials: true }
       );
@@ -95,7 +101,9 @@ const EditProfile = ({ user }) => {
       setTimeout(() => setToast(false), 3000);
     } catch (e) {
       setError(
-        e.response?.data?.message || e.message || "Something went wrong."
+        e.response?.data?.message ||
+          e.message ||
+          "Something went wrong."
       );
     } finally {
       setLoading(false);
@@ -103,46 +111,69 @@ const EditProfile = ({ user }) => {
   };
 
   return (
-    <div className="w-full">
-      <EditProfileHeader />
+    <main className="relative min-h-screen overflow-hidden bg-base-100 px-4 py-7 transition-colors duration-300 sm:px-6 sm:py-10 lg:px-8">
 
-      <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12">
-        <div className="lg:col-span-7">
-          <ProfileForm
-            firstName={firstName}
-            setFirstName={setFirstName}
-            lastName={lastName}
-            setLastName={setLastName}
-            gender={gender}
-            setGender={setGender}
-            age={age}
-            setAge={setAge}
-            about={about}
-            setAbout={setAbout}
-            photoUrl={photoUrl}
-            photoError={photoError}
-            handlePhotoChange={handlePhotoChange}
-            error={error}
-            loading={loading}
-            saveProfile={saveProfile}
-          />
+      {/* Background Decoration */}
+      <div className="pointer-events-none absolute -left-40 top-32 h-96 w-96 rounded-full bg-primary/5 blur-3xl" />
+      <div className="pointer-events-none absolute -right-40 bottom-20 h-96 w-96 rounded-full bg-accent/5 blur-3xl" />
+
+      <div className="relative mx-auto w-full max-w-7xl">
+
+        {/* Header */}
+        <EditProfileHeader />
+
+        {/* Main Content */}
+        <div className="mt-8 grid grid-cols-1 items-start gap-6 lg:grid-cols-12 lg:gap-8">
+
+          {/* Profile Form */}
+          <section className="min-w-0 lg:col-span-7">
+            <div className="overflow-hidden rounded-2xl border border-base-300 bg-base-200/70 shadow-sm sm:rounded-3xl">
+              <ProfileForm
+                firstName={firstName}
+                setFirstName={setFirstName}
+                lastName={lastName}
+                setLastName={setLastName}
+                gender={gender}
+                setGender={setGender}
+                age={age}
+                setAge={setAge}
+                about={about}
+                setAbout={setAbout}
+                photoUrl={photoUrl}
+                photoError={photoError}
+                handlePhotoChange={handlePhotoChange}
+                error={error}
+                loading={loading}
+                saveProfile={saveProfile}
+              />
+            </div>
+          </section>
+
+          {/* Live Profile Preview */}
+          <aside className="min-w-0 lg:sticky lg:top-24 lg:col-span-5">
+            <ProfilePreview
+              user={user}
+              firstName={firstName}
+              lastName={lastName}
+              photoUrl={photoUrl}
+              gender={gender}
+              age={age}
+              about={about}
+            />
+          </aside>
         </div>
 
-        <div className="lg:col-span-5">
-          <ProfilePreview
-            user={user}
-            firstName={firstName}
-            lastName={lastName}
-            photoUrl={photoUrl}
-            gender={gender}
-            age={age}
-            about={about}
-          />
+        {/* Footer Note */}
+        <div className="mt-8 border-t border-base-300 pt-5">
+          <p className="text-center text-xs leading-relaxed text-base-content/40">
+            Your profile represents you in the DevTinder community.
+            Keep it authentic and up to date.
+          </p>
         </div>
       </div>
 
       <ProfileToast show={toast} />
-    </div>
+    </main>
   );
 };
 

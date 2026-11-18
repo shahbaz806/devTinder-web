@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { BASE_URL } from "../utils/constant";
+
 import plans from "./Premium/Plan";
 import PremiumHeader from "./Premium/PremiumHeader";
 import PricingCard from "./Premium/PricingCard";
@@ -22,7 +23,7 @@ const Premium = () => {
   // Check membership
   const verifyPremiumUser = async () => {
     try {
-      const res = await axios.get(BASE_URL + "/premium/verify", {
+      const res = await axios.get(`${BASE_URL}/premium/verify`, {
         withCredentials: true,
       });
 
@@ -39,7 +40,7 @@ const Premium = () => {
   const verifyPayment = async (response) => {
     try {
       const res = await axios.post(
-        BASE_URL + "/payment/verify",
+        `${BASE_URL}/payment/verify`,
         {
           razorpay_order_id: response.razorpay_order_id,
           razorpay_payment_id: response.razorpay_payment_id,
@@ -77,12 +78,13 @@ const Premium = () => {
       }
 
       const orderResponse = await axios.post(
-        BASE_URL + "/payment/create",
+        `${BASE_URL}/payment/create`,
         { memberShipType: type },
         { withCredentials: true }
       );
 
-      const { amount, keyId, currency, notes, orderId } = orderResponse.data;
+      const { amount, keyId, currency, notes, orderId } =
+        orderResponse.data;
 
       const options = {
         key: keyId,
@@ -98,7 +100,7 @@ const Premium = () => {
         },
 
         theme: {
-          color: "#6366F1",
+          color: "#A95735",
         },
 
         handler: async (response) => {
@@ -137,13 +139,14 @@ const Premium = () => {
     }
   };
 
-  // Checking membership
+  // Membership checking screen
   if (checking) {
     return (
-      <div className="flex min-h-[calc(100vh-80px)] items-center justify-center bg-base-100 transition-colors duration-300">
+      <div className="flex min-h-[calc(100vh-80px)] items-center justify-center bg-base-100 px-4 transition-colors duration-300">
         <div className="text-center">
-          <span className="loading loading-spinner loading-lg text-indigo-500" />
-          <p className="mt-4 text-sm font-medium text-base-content/60">
+          <span className="loading loading-spinner loading-lg text-primary" />
+
+          <p className="mt-5 text-sm font-medium text-base-content/60">
             Checking your membership...
           </p>
         </div>
@@ -151,34 +154,36 @@ const Premium = () => {
     );
   }
 
-  // Premium user
+  // Premium user screen
   if (isUserPremium) {
     return <PremiumSuccess memberShipType={memberShipType} />;
   }
 
   return (
-    <div className="relative min-h-[calc(100vh-80px)] overflow-hidden bg-base-100 px-4 py-12 transition-colors duration-300 sm:px-8">
+    <main className="relative min-h-[calc(100vh-80px)] overflow-hidden bg-base-100 px-4 py-14 transition-colors duration-300 sm:px-8 lg:py-20">
 
-      {/* Background Texture */}
+      {/* Background texture */}
       <div
-        className="pointer-events-none absolute inset-0 opacity-[0.12] dark:opacity-[0.18]"
+        className="pointer-events-none absolute inset-0 opacity-[0.10]"
         style={{
-          backgroundImage: "radial-gradient(#818cf8 1px, transparent 1px)",
-          backgroundSize: "25px 25px",
+          backgroundImage:
+            "radial-gradient(rgb(169 87 53) 1px, transparent 1px)",
+          backgroundSize: "28px 28px",
         }}
       />
 
-      <div className="pointer-events-none absolute -top-32 -left-24 h-96 w-96 rounded-full bg-indigo-500/10 blur-3xl" />
+      {/* Soft ambient lights */}
+      <div className="pointer-events-none absolute -left-40 top-20 h-96 w-96 rounded-full bg-primary/10 blur-[120px]" />
 
-      <div className="pointer-events-none absolute top-80 -right-32 h-96 w-96 rounded-full bg-violet-500/10 blur-3xl" />
+      <div className="pointer-events-none absolute -right-40 top-[45%] h-96 w-96 rounded-full bg-accent/10 blur-[120px]" />
 
-      <div className="relative mx-auto max-w-6xl">
+      <div className="relative z-10 mx-auto max-w-6xl">
 
-        {/* Premium Header */}
+        {/* Premium header */}
         <PremiumHeader />
 
-        {/* Pricing Plans */}
-        <div className="mx-auto grid max-w-5xl gap-8 md:grid-cols-2 md:items-stretch">
+        {/* Pricing plans */}
+        <section className="mx-auto mt-12 grid max-w-5xl gap-7 md:grid-cols-2 md:items-stretch lg:mt-16">
           {plans.map((plan) => (
             <PricingCard
               key={plan.id}
@@ -188,20 +193,32 @@ const Premium = () => {
               processingType={processingType}
             />
           ))}
-        </div>
+        </section>
 
-        {/* Payment Error */}
+        {/* Payment error */}
         {error && (
-          <div className="mx-auto mt-7 max-w-xl rounded-2xl border border-rose-500/30 bg-rose-500/10 px-5 py-4 text-center text-sm font-medium text-rose-500">
+          <div
+            role="alert"
+            className="mx-auto mt-8 max-w-xl rounded-2xl border border-error/25 bg-error/10 px-5 py-4 text-center text-sm font-medium text-error"
+          >
             {error}
           </div>
         )}
 
-        <p className="mt-12 text-center text-sm text-base-content/40">
-          Build connections. Share knowledge. Grow together.
-        </p>
+        {/* Footer note */}
+        <div className="mt-14 text-center">
+          <div className="mx-auto mb-4 h-px w-16 bg-primary/30" />
+
+          <p className="text-sm font-medium tracking-wide text-base-content/50">
+            Build connections. Share knowledge. Grow together.
+          </p>
+
+          <p className="mt-2 text-xs text-base-content/35">
+            Your next opportunity starts with a connection.
+          </p>
+        </div>
       </div>
-    </div>
+    </main>
   );
 };
 

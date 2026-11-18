@@ -1,9 +1,5 @@
-/* @import "tailwindcss";
-@plugin "daisyui";
-@plugin "daisyui" {
-  themes: dim --default, dark --prefersdark;
-} */
 
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap");
 
 @import "tailwindcss";
 
@@ -11,12 +7,265 @@
   themes: light --default, dark;
 }
 
+
+[data-theme="light"] {
+  color-scheme: light;
+
+  --color-base-100: #F0E8DD;
+  --color-base-200: #E8DED1;
+  --color-base-300: #D5C5B2;
+  --color-base-content: #211B17;
+
+  --color-primary: #A95735;
+  --color-primary-content: #FFFFFF;
+
+  --color-secondary: #542E20;
+  --color-secondary-content: #FFFFFF;
+
+  --color-accent: #C47A53;
+  --color-accent-content: #FFFFFF;
+
+  --color-neutral: #30251F;
+  --color-neutral-content: #F8F1E9;
+
+  --color-info: #627F91;
+  --color-info-content: #FFFFFF;
+
+  --color-success: #54785A;
+  --color-success-content: #FFFFFF;
+
+  --color-warning: #C18B42;
+  --color-warning-content: #211B17;
+
+  --color-error: #B84C43;
+  --color-error-content: #FFFFFF;
+}
+
+/* =========================================
+   DARK THEME — CHARCOAL + WARM COPPER
+========================================= */
+
 [data-theme="dark"] {
   color-scheme: dark;
-  --color-base-100: #17243A;
-  --color-base-200: #1E293B;
-  --color-base-300: #334155;
-  --color-base-content: #F1F5F9;
-  --color-primary: #6366F1;
-  --color-primary-content: #FFFFFF;
+
+  --color-base-100: #171513;
+  --color-base-200: #211D19;
+  --color-base-300: #383029;
+  --color-base-content: #F1E9DF;
+
+  --color-primary: #C47A53;
+  --color-primary-content: #171513;
+
+  --color-secondary: #A95735;
+  --color-secondary-content: #FFFFFF;
+
+  --color-accent: #D69A72;
+  --color-accent-content: #171513;
+
+  --color-neutral: #302822;
+  --color-neutral-content: #F1E9DF;
+
+  --color-info: #83A9BC;
+  --color-info-content: #171513;
+
+  --color-success: #86A987;
+  --color-success-content: #171513;
+
+  --color-warning: #E2B46D;
+  --color-warning-content: #171513;
+
+  --color-error: #E17C70;
+  --color-error-content: #171513;
+}
+
+/* =========================================
+   GLOBAL FOUNDATION
+========================================= */
+
+:root {
+  font-family: "DM Sans", sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  scroll-behavior: smooth;
+  scroll-padding-top: 90px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+
+  background-color: var(--color-base-100);
+  color: var(--color-base-content);
+
+  font-family: "DM Sans", sans-serif;
+
+  transition:
+    background-color 300ms ease,
+    color 300ms ease;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* =========================================
+   TYPOGRAPHY
+========================================= */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+.font-serif {
+  font-family: "Playfair Display", Georgia, serif;
+}
+
+/* =========================================
+   INTERACTIVE ELEMENTS
+========================================= */
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button {
+  font: inherit;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 4px;
+}
+
+/* =========================================
+   SELECTION
+========================================= */
+
+::selection {
+  background-color: var(--color-primary);
+  color: #FFFFFF;
+}
+
+/* =========================================
+   SCROLLBAR — SUBTLE & PREMIUM
+========================================= */
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-base-300) var(--color-base-100);
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--color-base-100);
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--color-base-300);
+  border-radius: 20px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary);
+}
+
+/* =========================================
+   IMAGE RENDERING
+========================================= */
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+/* =========================================
+   SECTION SCROLL OFFSET
+========================================= */
+
+section[id] {
+  scroll-margin-top: 90px;
+}
+
+/* =========================================
+   THEME TRANSITION
+========================================= */
+
+body,
+header,
+nav,
+main,
+section,
+footer,
+article,
+button,
+a {
+  transition-property:
+    background-color,
+    border-color,
+    color,
+    box-shadow;
+  transition-duration: 250ms;
+  transition-timing-function: ease;
+}
+
+/* =========================================
+   REDUCED MOTION ACCESSIBILITY
+========================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* =========================================
+   SMALL SCREEN POLISH
+========================================= */
+
+@media (max-width: 640px) {
+  html {
+    scroll-padding-top: 76px;
+  }
+
+  section[id] {
+    scroll-margin-top: 76px;
+  }
 }

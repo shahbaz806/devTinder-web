@@ -1,16 +1,39 @@
 
 import axios from "axios";
 import React, { useState } from "react";
-import { BASE_URL } from "../utils/constant";
+import {
+  AlertCircle,
+  Code2,
+  Heart,
+  LoaderCircle,
+  Sparkles,
+  UserRound,
+  X,
+} from "lucide-react";
 import { useDispatch } from "react-redux";
+
+import { BASE_URL } from "../utils/constant";
 import { removeUserFeed } from "../utils/feedSlice";
 
 const UserCard = ({ user }) => {
   const [loading, setLoading] = useState(false);
   const [activeButton, setActiveButton] = useState("");
   const [error, setError] = useState("");
+
   const dispatch = useDispatch();
-  const {_id, firstName, lastName, photoUrl,age, gender, about,} = user;
+
+  const {
+    _id,
+    firstName,
+    lastName,
+    photoUrl,
+    age,
+    gender,
+    about,
+    skills,
+  } = user;
+
+  const fullName = `${firstName || ""} ${lastName || ""}`.trim();
 
   const handleSendRequest = async (status, userId) => {
     try {
@@ -19,7 +42,7 @@ const UserCard = ({ user }) => {
       setError("");
 
       await axios.post(
-        BASE_URL + "/request/send/" + status + "/" + userId,
+        `${BASE_URL}/request/send/${status}/${userId}`,
         {},
         { withCredentials: true }
       );
@@ -35,84 +58,141 @@ const UserCard = ({ user }) => {
   };
 
   return (
-    <div className="w-full max-w-[370px] overflow-hidden rounded-2xl border border-base-300 bg-base-200 text-base-content shadow-lg shadow-base-300/20 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
-
+    <article className="group mx-auto w-full max-w-[400px] overflow-hidden rounded-3xl border border-base-300 bg-base-200 shadow-xl shadow-base-content/[0.07] transition-all duration-300 hover:-translate-y-1">
       {/* Profile Image */}
-      <div className="relative h-[200px] w-full overflow-hidden bg-base-300 min-[400px]:h-[260px] sm:h-[300px] md:h-[240px]">
+      <div className="relative h-[280px] w-full overflow-hidden bg-base-300 sm:h-[310px]">
         {photoUrl ? (
           <img
             src={photoUrl}
-            alt={`${firstName} ${lastName}`}
+            alt={`${fullName || "Developer"}'s profile`}
             loading="lazy"
-             className="block bg-base-300 h-full w-full object-cover object-[center_45%]"
+            className="h-full w-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
           />
         ) : (
-          <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-indigo-500/10 to-violet-500/20">
-            <span className="text-6xl font-bold text-primary">
+          <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-primary/10 via-base-200 to-accent/20">
+            <div className="flex h-24 w-24 items-center justify-center rounded-full border border-primary/20 bg-primary/10 text-4xl font-bold text-primary">
               {firstName?.charAt(0)?.toUpperCase() || "D"}
-            </span>
+            </div>
           </div>
         )}
+
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-black/20" />
+
+        <div className="absolute left-4 top-4 flex items-center gap-2 rounded-full border border-white/20 bg-black/30 px-3 py-2 text-white backdrop-blur-md">
+          <Sparkles size={13} className="text-[#D69A72]" />
+          <span className="text-[10px] font-semibold uppercase tracking-wider">
+            Developer profile
+          </span>
+        </div>
+
+        <div className="absolute bottom-0 left-0 right-0 p-5">
+          <div className="mb-2 flex items-center gap-2 text-white/75">
+            <Code2 size={13} />
+            <span className="text-[10px] font-semibold uppercase tracking-wider">
+              Community member
+            </span>
+          </div>
+
+          <h2 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
+            {fullName || "Developer"}
+            {age && (
+              <span className="ml-2 font-normal text-white/80">{age}</span>
+            )}
+          </h2>
+
+          {gender && (
+            <p className="mt-1 text-xs capitalize text-white/75">{gender}</p>
+          )}
+        </div>
       </div>
 
       {/* Profile Details */}
       <div className="p-5">
-
-        {/* Name */}
-        <h2 className="text-xl font-bold text-base-content">
-          {firstName} {lastName}
-        </h2>
-
-        {/* Age & Gender */}
-        {(age || gender) && (
-          <p className="mt-1 text-sm capitalize text-base-content/60">
-            {age && `${age} years`}
-            {age && gender && " · "}
-            {gender}
-          </p>
-        )}
-
-        {/* About */}
-        <div className="mt-4">
-          <p className="line-clamp-2 text-sm leading-6 text-base-content/70">
-            {about || "No bio available."}
-          </p>
+        <div className="flex items-center gap-2">
+          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10 text-primary">
+            <UserRound size={14} />
+          </div>
+          <h3 className="text-xs font-bold uppercase tracking-wider text-base-content/70">
+            About
+          </h3>
         </div>
 
-        {/* Action Buttons */}
-        <div className="mt-6 flex gap-3">
+        <p className="mt-2 line-clamp-3 min-h-[48px] text-sm leading-6 text-base-content/65">
+          {about || "This developer hasn't added a bio yet."}
+        </p>
 
-          {/* Ignore */}
+        {Array.isArray(skills) && skills.length > 0 && (
+          <div className="mt-4 border-t border-base-300 pt-4">
+            <div className="mb-3 flex items-center gap-2">
+              <Code2 size={14} className="text-primary" />
+              <h3 className="text-xs font-bold uppercase tracking-wider text-base-content/70">
+                Skills & Technologies
+              </h3>
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              {skills.slice(0, 5).map((skill, index) => (
+                <span
+                  key={`${skill}-${index}`}
+                  className="rounded-lg border border-primary/15 bg-primary/5 px-2.5 py-1.5 text-xs font-medium text-base-content/80"
+                >
+                  {skill}
+                </span>
+              ))}
+
+              {skills.length > 5 && (
+                <span className="rounded-lg border border-base-300 bg-base-300/50 px-2.5 py-1.5 text-xs text-base-content/60">
+                  +{skills.length - 5} more
+                </span>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Actions */}
+        <div className="mt-5 grid grid-cols-2 gap-3 border-t border-base-300 pt-4">
           <button
+            type="button"
             disabled={loading}
             onClick={() => handleSendRequest("ignored", _id)}
-            className="flex-1 rounded-xl border border-base-300 bg-base-100 py-3 font-semibold text-base-content/80 transition-all duration-200 hover:border-base-content/30 hover:bg-base-300 disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex min-h-11 items-center justify-center gap-2 rounded-xl border border-base-300 bg-base-100 px-3 text-sm font-semibold text-base-content/75 transition hover:bg-base-300 disabled:opacity-50"
           >
-            {loading && activeButton === "ignored"
-              ? "Please wait..."
-              : "Ignore"}
+            {loading && activeButton === "ignored" ? (
+              <LoaderCircle size={16} className="animate-spin" />
+            ) : (
+              <X size={16} />
+            )}
+            {loading && activeButton === "ignored" ? "Please wait" : "Ignore"}
           </button>
 
-          {/* Interested */}
           <button
+            type="button"
             disabled={loading}
             onClick={() => handleSendRequest("interested", _id)}
-            className="flex-1 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 py-3 font-semibold text-white shadow-md shadow-indigo-500/20 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-indigo-500/30 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0"
+            className="flex min-h-11 items-center justify-center gap-2 rounded-xl bg-primary px-3 text-sm font-semibold text-primary-content shadow-md shadow-primary/15 transition hover:-translate-y-0.5 hover:brightness-110 disabled:opacity-50"
           >
+            {loading && activeButton === "interested" ? (
+              <LoaderCircle size={16} className="animate-spin" />
+            ) : (
+              <Heart size={16} />
+            )}
             {loading && activeButton === "interested"
-              ? "Please wait..."
-              : "♥ Interested"}
+              ? "Please wait"
+              : "Interested"}
           </button>
         </div>
 
-        {/* Error Message */}
         {error && (
-          <p className="mt-3 rounded-lg border border-error/20 bg-error/10 p-2 text-xs text-error">
-            {error}
-          </p>
+          <div
+            role="alert"
+            className="mt-4 flex items-start gap-2 rounded-xl border border-error/20 bg-error/5 p-3 text-xs text-error"
+          >
+            <AlertCircle size={14} className="mt-0.5 shrink-0" />
+            <span>{error}</span>
+          </div>
         )}
       </div>
-    </div>
+    </article>
   );
 };
 

@@ -1,87 +1,138 @@
-import React from "react";
-import { UserRound, Check, X } from "lucide-react";
 
-const RequestCard = ({ req, onReview, processingId, processingStatus }) => {
+import React from "react";
+import {
+  UserRound,
+  Check,
+  X,
+  Sparkles,
+  Clock3,
+  LoaderCircle,
+} from "lucide-react";
+
+const RequestCard = ({
+  req,
+  onReview,
+  processingId,
+  processingStatus,
+}) => {
   const user = req.fromUserId || {};
 
-  const { firstName, lastName, photoUrl, age, gender, about } = user;
+  const {
+    firstName,
+    lastName,
+    photoUrl,
+    age,
+    gender,
+    about,
+  } = user;
 
   const isProcessing = processingId === req._id;
+  const fullName = `${firstName || ""} ${lastName || ""}`.trim();
 
   return (
-    <div className="group flex flex-col gap-5 rounded-3xl border border-base-300 bg-base-200/80 p-5 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:border-indigo-500/40 hover:shadow-xl sm:flex-row sm:items-center sm:p-6">
-      {/* Profile */}
-      <div className="flex min-w-0 flex-1 items-center gap-4">
-        <div className="relative shrink-0">
-          <img
-            src={photoUrl || "https://placehold.co/120x120?text=User"}
-            alt={`${firstName || "User"} profile`}
-            className="h-20 w-20 rounded-2xl border-4 border-indigo-500/10 object-cover shadow-md sm:h-24 sm:w-24"
-          />
+    <article className="group relative overflow-hidden rounded-3xl border border-base-300 bg-base-200 p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-xl hover:shadow-primary/5 sm:p-6">
 
-          <span className="absolute -bottom-1 -right-1 flex h-7 w-7 items-center justify-center rounded-full border-2 border-base-200 bg-indigo-600 text-white">
-            <UserRound size={14} />
+      {/* Subtle decoration */}
+      <div className="pointer-events-none absolute -right-16 -top-20 h-48 w-48 rounded-full bg-primary/5 blur-3xl transition-colors group-hover:bg-primary/10" />
+
+      {/* Request Label */}
+      <div className="relative mb-5 flex items-center justify-between">
+        <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-3 py-1.5">
+          <Sparkles size={13} className="text-primary" />
+          <span className="text-[10px] font-bold uppercase tracking-[1.5px] text-primary">
+            Connection request
           </span>
         </div>
 
-        <div className="min-w-0">
-          <h2 className="truncate text-xl font-bold text-base-content sm:text-2xl">
-            {firstName} {lastName}
+        <div className="flex items-center gap-1.5 text-base-content/40">
+          <Clock3 size={13} />
+          <span className="text-[10px] font-medium">Pending</span>
+        </div>
+      </div>
+
+      {/* Profile */}
+      <div className="relative flex min-w-0 flex-col gap-5 sm:flex-row sm:items-center">
+
+        {/* Avatar */}
+        <div className="relative mx-auto shrink-0 sm:mx-0">
+          <div className="h-24 w-24 overflow-hidden rounded-[26px] border border-primary/20 bg-base-300 shadow-sm sm:h-28 sm:w-28">
+            {photoUrl ? (
+              <img
+                src={photoUrl}
+                alt={fullName || "Developer"}
+                loading="lazy"
+                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+            ) : (
+              <div className="flex h-full w-full items-center justify-center bg-primary/10 text-4xl font-bold text-primary">
+                {firstName?.charAt(0)?.toUpperCase() || "D"}
+              </div>
+            )}
+          </div>
+
+          <div className="absolute -bottom-2 -right-2 flex h-8 w-8 items-center justify-center rounded-xl border-2 border-base-200 bg-primary text-primary-content shadow-sm">
+            <UserRound size={15} />
+          </div>
+        </div>
+
+        {/* Details */}
+        <div className="min-w-0 flex-1 text-center sm:text-left">
+          <h2 className="text-xl font-bold tracking-tight text-base-content transition-colors group-hover:text-primary sm:text-2xl">
+            {fullName || "Developer"}
           </h2>
 
           {(age || gender) && (
-            <p className="mt-1 text-sm font-medium text-indigo-500">
-              {[age, gender].filter(Boolean).join(" • ")}
+            <p className="mt-1.5 text-xs font-medium capitalize text-primary/80">
+              {[age && `${age} years`, gender].filter(Boolean).join(" · ")}
             </p>
           )}
 
-          <p className="mt-2 line-clamp-2 text-sm leading-6 text-base-content/60">
-            {about || "No bio available yet."}
+          <p className="mt-3 line-clamp-2 text-sm leading-6 text-base-content/60">
+            {about || "This developer hasn't added a bio yet."}
           </p>
         </div>
       </div>
 
+      {/* Divider */}
+      <div className="my-5 border-t border-base-300" />
+
       {/* Actions */}
-      <div className="flex shrink-0 gap-3 sm:flex-col md:flex-row">
-        {/* Reject Button */}
+      <div className="relative grid grid-cols-2 gap-3">
         <button
+          type="button"
           disabled={isProcessing}
           onClick={() => onReview("rejected", req._id)}
-          className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-rose-500/30 bg-rose-500/10 px-5 py-3 text-sm font-bold text-rose-500 transition hover:bg-rose-500/20 disabled:cursor-not-allowed disabled:opacity-60 sm:flex-none"
+          className="flex min-h-12 items-center justify-center gap-2 rounded-xl border border-base-300 bg-base-100 px-4 text-sm font-semibold text-base-content/75 transition-all duration-200 hover:border-error/30 hover:bg-error/5 hover:text-error disabled:cursor-not-allowed disabled:opacity-50"
         >
           {isProcessing && processingStatus === "rejected" ? (
-            <>
-              <span className="loading loading-spinner loading-xs" />
-              Please wait...
-            </>
+            <LoaderCircle size={17} className="animate-spin" />
           ) : (
-            <>
-              <X size={18} />
-              Reject
-            </>
+            <X size={17} />
           )}
+
+          {isProcessing && processingStatus === "rejected"
+            ? "Please wait"
+            : "Decline"}
         </button>
 
-        {/* Accept Button */}
         <button
+          type="button"
           disabled={isProcessing}
           onClick={() => onReview("accepted", req._id)}
-          className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-5 py-3 text-sm font-bold text-white shadow-md shadow-indigo-500/20 transition hover:from-indigo-700 hover:to-violet-700 disabled:cursor-not-allowed disabled:opacity-60 sm:flex-none"
+          className="flex min-h-12 items-center justify-center gap-2 rounded-xl bg-primary px-4 text-sm font-semibold text-primary-content shadow-md shadow-primary/15 transition-all duration-200 hover:-translate-y-0.5 hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0"
         >
           {isProcessing && processingStatus === "accepted" ? (
-            <>
-              <span className="loading loading-spinner loading-xs" />
-              Please wait...
-            </>
+            <LoaderCircle size={17} className="animate-spin" />
           ) : (
-            <>
-              <Check size={18} />
-              Accept
-            </>
+            <Check size={17} />
           )}
+
+          {isProcessing && processingStatus === "accepted"
+            ? "Please wait"
+            : "Accept"}
         </button>
       </div>
-    </div>
+    </article>
   );
 };
 

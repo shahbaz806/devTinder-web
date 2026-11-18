@@ -1,51 +1,61 @@
+
 import React from "react";
-import { Code2 } from "lucide-react";
+import { ArrowLeft, ShieldCheck, MoreVertical } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const ChatHeader = ({ targetName }) => {
+  const navigate = useNavigate();
+
   const getInitial = (name) =>
     name?.charAt(0)?.toUpperCase() || "D";
 
   return (
-    <div className="flex items-center justify-between border-b border-base-300 bg-base-200 px-5 py-4">
+    <header className="z-10 flex shrink-0 items-center justify-between gap-3 border-b border-base-300 bg-base-100 px-3 py-3 sm:px-5">
 
-      <div className="flex items-center gap-3">
+      {/* Back + User Details */}
+      <div className="flex min-w-0 items-center gap-2.5 sm:gap-3">
 
-        {/* Profile Initial */}
-        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 text-xl font-bold text-white shadow-md shadow-indigo-500/20">
-          {getInitial(targetName)}
+        {/* Back Button */}
+        <button
+          type="button"
+          onClick={() => navigate(-1)}
+          aria-label="Go back"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-base-content/70 transition-colors hover:bg-base-200 hover:text-base-content sm:hidden"
+        >
+          <ArrowLeft size={20} />
+        </button>
+
+        {/* Avatar */}
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full border border-base-300 bg-primary/10 font-semibold text-primary">
+          <span>{getInitial(targetName)}</span>
         </div>
 
-        {/* User Details */}
-        <div>
-          <h2 className="text-base font-bold text-base-content sm:text-lg">
-            {targetName}
+        {/* Name */}
+        <div className="min-w-0">
+          <h2 className="truncate text-sm font-semibold text-base-content sm:text-base">
+            {targetName || "Developer"}
           </h2>
 
-          <div className="mt-1 flex items-center gap-2">
-            <span className="h-2 w-2 rounded-full bg-emerald-500" />
+          <div className="mt-0.5 flex items-center gap-1.5">
+            <ShieldCheck size={12} className="shrink-0 text-primary" />
 
-            <p className="text-xs text-base-content/50">
+            <span className="text-[11px] text-base-content/50">
               Developer Connection
-            </p>
+            </span>
           </div>
         </div>
-
       </div>
 
-      {/* Branding */}
-      <div className="hidden text-right sm:block">
+      {/* More Options */}
+      <button
+        type="button"
+        aria-label="More options"
+        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-base-content/60 transition-colors hover:bg-base-200 hover:text-base-content"
+      >
+        <MoreVertical size={20} />
+      </button>
 
-        <div className="flex items-center justify-end gap-2 text-sm font-bold text-indigo-500">
-          <Code2 size={17} />
-          DevTinder Chat
-        </div>
-
-        <p className="text-xs text-base-content/50">
-          Connect. Code. Collaborate.
-        </p>
-
-      </div>
-    </div>
+    </header>
   );
 };
 

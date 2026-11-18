@@ -34,7 +34,7 @@ const Login = () => {
       );
 
       dispatch(addUser(res.data));
-      navigate("/");
+      navigate("/feed",{ replace: true });
     } catch (err) {
       setError(
         typeof err?.response?.data === "string"

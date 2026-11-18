@@ -1,132 +1,146 @@
 
 import React from "react";
-import { Check, Crown, ShieldCheck, ArrowRight } from "lucide-react";
+import {
+  Check,
+  Crown,
+  ShieldCheck,
+  ArrowRight,
+  Sparkles,
+  LoaderCircle,
+} from "lucide-react";
 
 const PricingCard = ({ plan, onBuy, loading, processingType }) => {
   const Icon = plan.icon === "crown" ? Crown : ShieldCheck;
+  const isFeatured = plan.featured;
+  const isProcessing = loading && processingType === plan.id;
 
   return (
-    <div
-      className={`relative flex flex-col rounded-[32px] border p-7 transition-all duration-300 hover:-translate-y-2 sm:p-9 ${
-        plan.featured
-          ? "border-indigo-400/40 bg-gradient-to-br from-indigo-950 via-slate-800 to-violet-950 text-white shadow-2xl shadow-indigo-500/10"
-          : "border-base-300 bg-base-200 text-base-content shadow-xl shadow-base-300/20"
+    <article
+      className={`group relative flex h-full flex-col overflow-hidden rounded-[28px] border p-7 transition-all duration-300 sm:p-9 ${
+        isFeatured
+          ? "border-primary/50 bg-base-200 shadow-2xl shadow-primary/10"
+          : "border-base-300 bg-base-200 shadow-lg shadow-base-content/[0.03] hover:-translate-y-1 hover:border-primary/30"
       }`}
     >
-      {/* Plan Icon & Badge */}
-      <div className="mb-7 flex items-center justify-between">
-        <div
-          className={`flex h-14 w-14 items-center justify-center rounded-2xl ${
-            plan.featured
-              ? "bg-white/10 text-amber-300"
-              : "bg-primary/10 text-primary"
-          }`}
-        >
-          <Icon size={29} />
+      {/* Featured Accent */}
+      {isFeatured && (
+        <div className="absolute left-0 top-0 h-1 w-full bg-primary" />
+      )}
+
+      {/* Soft Background Accent */}
+      {isFeatured && (
+        <div className="pointer-events-none absolute -right-20 -top-20 h-56 w-56 rounded-full bg-primary/10 blur-[80px]" />
+      )}
+
+      <div className="relative z-10 flex h-full flex-col">
+
+        {/* Plan Icon & Badge */}
+        <div className="mb-8 flex items-center justify-between">
+          <div
+            className={`flex h-14 w-14 items-center justify-center rounded-2xl border ${
+              isFeatured
+                ? "border-primary/25 bg-primary/10 text-primary"
+                : "border-base-300 bg-base-100 text-primary"
+            }`}
+          >
+            <Icon size={27} strokeWidth={1.8} />
+          </div>
+
+          <span
+            className={`inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-[11px] font-bold uppercase tracking-wider ${
+              isFeatured
+                ? "bg-primary text-primary-content"
+                : "border border-base-300 bg-base-100 text-base-content/60"
+            }`}
+          >
+            {isFeatured && <Sparkles size={13} />}
+            {plan.badge}
+          </span>
         </div>
 
-        <span
-          className={`rounded-full px-4 py-2 text-xs font-extrabold ${
-            plan.featured
-              ? "bg-amber-300 text-gray-900"
-              : "bg-primary/10 text-primary"
-          }`}
-        >
-          {plan.badge}
-        </span>
-      </div>
+        {/* Plan Details */}
+        <div>
+          <p className="mb-2 text-xs font-bold uppercase tracking-[0.18em] text-primary">
+            DevTinder Membership
+          </p>
 
-      {/* Plan Details */}
-      <h2 className="text-3xl font-black">
-        {plan.name} Membership
-      </h2>
+          <h2 className="font-serif text-3xl font-semibold tracking-tight text-base-content sm:text-4xl">
+            {plan.name}
+          </h2>
 
-      <p
-        className={`mt-2 text-sm ${
-          plan.featured ? "text-indigo-200" : "text-base-content/60"
-        }`}
-      >
-        {plan.subtitle}
-      </p>
+          <p className="mt-3 max-w-xs text-sm leading-6 text-base-content/55">
+            {plan.subtitle}
+          </p>
+        </div>
 
-      {/* Price */}
-      <div className="mt-7 flex items-end gap-2">
-        <span className="text-5xl font-black">
-          {plan.price}
-        </span>
+        {/* Price */}
+        <div className="mt-8 flex items-baseline gap-2">
+          <span className="text-5xl font-bold tracking-tight text-base-content sm:text-6xl">
+            {plan.price}
+          </span>
 
-        <span
-          className={`pb-2 text-sm ${
-            plan.featured ? "text-indigo-200" : "text-base-content/60"
-          }`}
-        >
-          / {plan.duration}
-        </span>
-      </div>
+          <span className="text-sm font-medium text-base-content/45">
+            / {plan.duration}
+          </span>
+        </div>
 
-      {/* Divider */}
-      <div
-        className={`my-8 h-px ${
-          plan.featured ? "bg-white/20" : "bg-base-300"
-        }`}
-      />
+        {/* Divider */}
+        <div className="my-8 h-px bg-base-300" />
 
-      {/* Features */}
-      <div className="flex-1 space-y-5">
-        {plan.features.map((feature, index) => (
-          <div key={index} className="flex items-start gap-3">
-            <div
-              className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full ${
-                plan.featured
-                  ? "bg-emerald-400/20 text-emerald-300"
-                  : "bg-primary/10 text-primary"
-              }`}
-            >
-              <Check size={13} strokeWidth={3} />
-            </div>
+        {/* Features */}
+        <div className="flex-1">
+          <p className="mb-5 text-xs font-bold uppercase tracking-[0.15em] text-base-content/45">
+            What's included
+          </p>
 
-            <span
-              className={`text-sm leading-6 ${
-                plan.featured
-                  ? "text-indigo-100"
-                  : "text-base-content/75"
-              }`}
-            >
-              {feature}
-            </span>
+          <div className="space-y-5">
+            {plan.features.map((feature, index) => (
+              <div key={index} className="flex items-start gap-3">
+                <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                  <Check size={13} strokeWidth={3} />
+                </div>
+
+                <span className="text-sm leading-6 text-base-content/75">
+                  {feature}
+                </span>
+              </div>
+            ))}
           </div>
-        ))}
+        </div>
+
+        {/* Buy Button */}
+        <button
+          onClick={() => onBuy(plan.id)}
+          disabled={loading}
+          className={`mt-10 flex w-full items-center justify-center gap-3 rounded-xl px-5 py-4 text-sm font-bold transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-60 ${
+            isFeatured
+              ? "bg-primary text-primary-content shadow-lg shadow-primary/15 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-primary/20"
+              : "border border-base-300 bg-base-100 text-base-content hover:-translate-y-0.5 hover:border-primary/40 hover:bg-primary/5"
+          }`}
+        >
+          {isProcessing ? (
+            <>
+              <LoaderCircle size={18} className="animate-spin" />
+              Processing...
+            </>
+          ) : (
+            <>
+              Get {plan.name}
+              <ArrowRight
+                size={18}
+                className="transition-transform duration-200 group-hover:translate-x-1"
+              />
+            </>
+          )}
+        </button>
+
+        {/* Payment Info */}
+        <div className="mt-5 flex items-center justify-center gap-2 text-xs text-base-content/45">
+          <ShieldCheck size={14} className="text-primary" />
+          Secure payment powered by Razorpay
+        </div>
       </div>
-
-      {/* Buy Button */}
-      <button
-        onClick={() => onBuy(plan.id)}
-        disabled={loading}
-        className={`mt-9 flex w-full items-center justify-center gap-3 rounded-2xl py-4 font-extrabold transition-all duration-300 hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-60 ${
-          plan.featured
-            ? "bg-gradient-to-r from-amber-300 to-yellow-400 text-gray-900 hover:shadow-lg hover:shadow-amber-400/20"
-            : "bg-gradient-to-r from-indigo-500 to-violet-600 text-white hover:shadow-lg hover:shadow-indigo-500/20"
-        }`}
-      >
-        {loading && processingType === plan.id ? (
-          "Processing..."
-        ) : (
-          <>
-            Get {plan.name}
-            <ArrowRight size={19} />
-          </>
-        )}
-      </button>
-
-      {/* Payment Info */}
-      <p
-        className={`mt-4 text-center text-xs ${
-          plan.featured ? "text-indigo-200/80" : "text-base-content/50"
-        }`}
-      >
-        Secure payment powered by Razorpay
-      </p>
-    </div>
+    </article>
   );
 };
 
