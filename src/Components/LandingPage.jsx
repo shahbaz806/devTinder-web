@@ -356,12 +356,12 @@ const LandingPage = () => {
                 </span>
               </div> */}
 
-              <div className="space-y-1 font-mono text-[10px]">
-                <p className="text-base-content/40">
-                  <span className="text-primary">const</span> community =
-                </p>
-                <p className="pl-3 text-base-content">"better together";</p>
-              </div>
+            <div className="space-y-1 font-mono text-[10px]">
+              <p className="text-base-content/40">
+                <span className="text-primary">const</span> community =
+              </p>
+              <p className="pl-3 text-base-content">"better together";</p>
+            </div>
             {/* </motion.div>  */}
 
             {/* Decorative Badge */}
@@ -688,12 +688,13 @@ const LandingPage = () => {
 
             <Link
               to="/login"
-              className=" text-black group mt-10 inline-flex items-center gap-3 rounded-full bg-[#F0E8DD] px-8 py-4 text-sm font-bold text-[#542E20] shadow-xl transition-all duration-300 hover:-translate-y-1 hover:bg-white"
+              className="group mt-10 inline-flex items-center gap-3 rounded-full bg-[#F0E8DD] px-8 py-4 text-sm font-bold !text-[#542E20] shadow-xl transition-all duration-300 hover:-translate-y-1 hover:bg-white"
             >
-              Join the community
+              <span className="!text-[#542E20]">Join the community</span>
+
               <ArrowUpRight
                 size={18}
-                className="transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1"
+                className="!text-[#542E20] transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1"
               />
             </Link>
 
