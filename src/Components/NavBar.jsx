@@ -51,7 +51,7 @@ const NavBar = () => {
       <div className="max-w-7xl mx-auto h-full px-4 md:px-8 flex items-center justify-between">
         {/* Logo + Theme Toggle */}
         <div className="flex items-center gap-3">
-          <Link to="/" className="flex items-center gap-2 group">
+          <Link to="/feed" className="flex items-center gap-2 group">
             <div className="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center group-hover:bg-indigo-700 transition shadow-md shadow-indigo-200">
               <Code2 size={23} className="text-white" />
             </div>
