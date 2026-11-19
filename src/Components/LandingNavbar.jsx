@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import {
@@ -10,11 +9,7 @@ import {
   ArrowUpRight,
   ChevronDown,
 } from "lucide-react";
-import {
-  motion,
-  AnimatePresence,
-  useReducedMotion,
-} from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 
 import { useTheme } from "./Context/ThemeContext";
 
@@ -33,12 +28,27 @@ const LandingNavbar = () => {
 
   const scrollToSection = (event, href) => {
     event.preventDefault();
+
+    const target = document.querySelector(href);
+
+    if (!target) {
+      console.warn(`Section not found: ${href}`);
+      return;
+    }
+
+    // Close mobile menu first
+    const delay = menuOpen ? 250 : 0;
     closeMenu();
 
-    document.querySelector(href)?.scrollIntoView({
-      behavior: shouldReduceMotion ? "auto" : "smooth",
-      block: "start",
-    });
+    // Scroll after mobile menu closes
+    setTimeout(() => {
+      const top = target.getBoundingClientRect().top + window.scrollY - 90;
+
+      window.scrollTo({
+        top,
+        behavior: shouldReduceMotion ? "auto" : "smooth",
+      });
+    }, delay);
   };
 
   const menuVariants = {
@@ -111,7 +121,9 @@ const LandingNavbar = () => {
                 onClick={(event) => scrollToSection(event, link.href)}
                 initial={shouldReduceMotion ? false : { opacity: 0, y: -8 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: shouldReduceMotion ? 0 : 0.15 + index * 0.08 }}
+                transition={{
+                  delay: shouldReduceMotion ? 0 : 0.15 + index * 0.08,
+                }}
                 className="group relative py-2 text-[13px] font-semibold tracking-wide text-base-content/65 transition-colors duration-300 hover:text-primary"
               >
                 {link.name}
@@ -128,22 +140,28 @@ const LandingNavbar = () => {
               whileHover={shouldReduceMotion ? {} : { scale: 1.06 }}
               whileTap={{ scale: 0.94 }}
               onClick={toggleTheme}
-              aria-label={`Switch to ${theme === "light" ? "dark" : "light"} theme`}
+              aria-label={`Switch to ${
+                theme === "light" ? "dark" : "light"
+              } theme`}
               className="flex h-10 w-10 items-center justify-center rounded-full border border-base-300 bg-base-200/70 text-base-content transition-all duration-300 hover:border-primary hover:text-primary"
             >
               <AnimatePresence mode="wait" initial={false}>
                 <motion.span
                   key={theme}
-                  initial={shouldReduceMotion ? false : { opacity: 0, rotate: -45, scale: 0.7 }}
+                  initial={
+                    shouldReduceMotion
+                      ? false
+                      : { opacity: 0, rotate: -45, scale: 0.7 }
+                  }
                   animate={{ opacity: 1, rotate: 0, scale: 1 }}
-                  exit={shouldReduceMotion ? {} : { opacity: 0, rotate: 45, scale: 0.7 }}
+                  exit={
+                    shouldReduceMotion
+                      ? {}
+                      : { opacity: 0, rotate: 45, scale: 0.7 }
+                  }
                   transition={{ duration: 0.2 }}
                 >
-                  {theme === "light" ? (
-                    <Moon size={18} />
-                  ) : (
-                    <Sun size={18} />
-                  )}
+                  {theme === "light" ? <Moon size={18} /> : <Sun size={18} />}
                 </motion.span>
               </AnimatePresence>
             </motion.button>
@@ -180,24 +198,24 @@ const LandingNavbar = () => {
               aria-label="Toggle theme"
               className="flex h-10 w-10 items-center justify-center rounded-full border border-base-300 bg-base-200/70 text-base-content transition-colors hover:border-primary hover:text-primary"
             >
-              {theme === "light" ? (
-                <Moon size={18} />
-              ) : (
-                <Sun size={18} />
-              )}
+              {theme === "light" ? <Moon size={18} /> : <Sun size={18} />}
             </button>
 
             <button
               type="button"
               onClick={() => setMenuOpen((previous) => !previous)}
-              aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
+              aria-label={
+                menuOpen ? "Close navigation menu" : "Open navigation menu"
+              }
               aria-expanded={menuOpen}
               className="flex h-10 w-10 items-center justify-center rounded-full border border-base-300 text-base-content transition-colors hover:border-primary hover:text-primary"
             >
               <AnimatePresence mode="wait" initial={false}>
                 <motion.span
                   key={menuOpen ? "close" : "open"}
-                  initial={shouldReduceMotion ? false : { rotate: -45, opacity: 0 }}
+                  initial={
+                    shouldReduceMotion ? false : { rotate: -45, opacity: 0 }
+                  }
                   animate={{ rotate: 0, opacity: 1 }}
                   exit={shouldReduceMotion ? {} : { rotate: 45, opacity: 0 }}
                   transition={{ duration: 0.15 }}
