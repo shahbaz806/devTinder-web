@@ -688,7 +688,7 @@ const LandingPage = () => {
 
             <Link
               to="/login"
-              className="group mt-10 inline-flex items-center gap-3 rounded-full bg-[#F0E8DD] px-8 py-4 text-sm font-bold text-[#542E20] shadow-xl transition-all duration-300 hover:-translate-y-1 hover:bg-white"
+              className=" text-black group mt-10 inline-flex items-center gap-3 rounded-full bg-[#F0E8DD] px-8 py-4 text-sm font-bold text-[#542E20] shadow-xl transition-all duration-300 hover:-translate-y-1 hover:bg-white"
             >
               Join the community
               <ArrowUpRight
